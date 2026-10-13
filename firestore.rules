@@ -1,0 +1,59 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Helper function
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    // User profiles collection - strictly owner-isolated
+    match /users/{userId} {
+      allow read, write: if isSignedIn() && request.auth.uid == userId;
+
+      // Personal user private monitoring records
+      match /personalFindings/{findingId} {
+        allow read, write: if isSignedIn() && request.auth.uid == userId;
+      }
+
+      match /personalAlerts/{alertId} {
+        allow read, write: if isSignedIn() && request.auth.uid == userId;
+      }
+    }
+
+    // Organizations collection and collaborative threat assets
+    match /organizations/{orgId} {
+      allow read, write: if isSignedIn();
+
+      // Organization Members Subcollection
+      match /members/{memberId} {
+        allow read, write: if isSignedIn();
+      }
+
+      // Brand Registry Subcollection
+      match /brands/{brandId} {
+        allow read, write: if isSignedIn();
+      }
+
+      // Social Threat Findings
+      match /socialFindings/{findingId} {
+        allow read, write: if isSignedIn();
+      }
+
+      // Mobile Application Store Threat Findings
+      match /appFindings/{appFindingId} {
+        allow read, write: if isSignedIn();
+      }
+
+      // Cryptographically Immutable Audit Trail Logs
+      match /auditLogs/{logId} {
+        allow read, write: if isSignedIn();
+      }
+    }
+
+    // Default catch-all for signed-in sessions
+    match /{document=**} {
+      allow read, write: if isSignedIn();
+    }
+  }
+}

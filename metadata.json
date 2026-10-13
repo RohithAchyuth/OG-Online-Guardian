@@ -1,0 +1,8 @@
+{
+  "name": "OG-Online Guardian",
+  "description": "Enterprise-grade Digital Risk Protection platform detecting social impersonation, look-alike domains, and unauthorized mobile applications.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
